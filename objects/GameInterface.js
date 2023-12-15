@@ -1,9 +1,9 @@
 const readlineSync = require("readline-sync");
-const { GameController } = require("./GameController");
 
 class GameInterface {
-  constructor() {
-    this.gameController = GameController;
+
+  constructor(gameController) {
+    this.gameController = gameController;
     this.MAX_WRONG_GUESSES = 6;
     this.hangmanStages = [
       `
@@ -88,6 +88,7 @@ class GameInterface {
     this.hints = `Dicas: ${hints}`;
     console.log(this.hints);
   }
+
   displayMenu() {
     console.log("=== Menu ===");
     console.log("1. Chutar uma Letra");
@@ -103,18 +104,14 @@ class GameInterface {
   handleMenuChoice(choice) {
     switch (choice) {
       case "1":
-        const letter = prompt("Digite a letra que deseja chutar: ");
-        this.gameController.makeGuess(letter);
+        const letter = readlineSync.question("Digite a letra que deseja chutar: ");
+        this.gameController.currentMatch.makeGuess(letter);
         break;
       case "2":
-        const wordGuess = prompt("Digite a palavra que deseja chutar: ");
-        this.gameController.makeWordGuess(wordGuess);
+        const wordGuess = readlineSync.question("Digite a palavra que deseja chutar: ");
+        this.gameController.currentMatch.makeWordGuess(wordGuess);
         break;
       case "3":
-        const score = this.gameController.getScore();
-        console.log(`Sua pontuação atual é: ${score}`);
-        break;
-      case "4":
         this.gameController.endMatch();
         break;
       default:

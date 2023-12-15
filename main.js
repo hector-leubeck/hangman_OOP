@@ -6,11 +6,12 @@ const gameInterface = new UserInterface(gameController);
 
 function startGame() {
   UserInterface.displayMenu();
+
   const choice = gameInterface.getUserChoice();
 
   switch (choice) {
     case "1":
-      gameController.startMatch();
+      gameController.startGame();
       break;
     case "2":
       console.log("Encerrando o programa. Adeus!");

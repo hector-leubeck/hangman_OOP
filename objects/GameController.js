@@ -1,13 +1,11 @@
 const { GameInterface } = require("./GameInterface");
-const gameInterface = new GameInterface(this);
 const { Match } = require("./Match");
-const readlineSync = require("readline-sync");
 
 class GameController {
   constructor() {
     this.players = [];
     this.currentMatch = new Match();
-    this.gameInterface = new GameInterface(); // Adicionando a instância de GameInterface
+    this.gameInterface = new GameInterface(this); // Passa a referência do GameController para GameInterface
   }
 
   startGame() {
@@ -15,8 +13,10 @@ class GameController {
   }
 
   startMatch() {
-    this.gameInterface.displayHangmanStage(/* argumentos necessários */);
-    this.gameInterface.displaySecretWord(/* argumentos necessários */);
+    this.gameInterface.displayMenu();
+    const choice = this.gameInterface.getUserChoice();
+
+    this.gameInterface.handleMenuChoice(choice);
   }
 
   addPlayer(player) {
