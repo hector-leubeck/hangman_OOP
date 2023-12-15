@@ -14,8 +14,8 @@ class Match {
     return readlineSync.question("Escolha uma opção: ");
   }
 
-  static getLetterGuess() {
-    return readlineSync.question("Faça uma suposição de letra: ");
+  static getUserGuess() {
+    return readlineSync.question("Faça uma suposição: ");
   }
 
   static getPlayerName() {
@@ -130,6 +130,8 @@ class HintProvider {
 
 class GameController {
   constructor() {
+    this.victories = 0;
+    this.defeats = 0;
     this.players = [];
     this.currentPlayerIndex = 0;
     this.maxWrongGuesses = 6;
@@ -226,7 +228,25 @@ class GameController {
         this.getCurrentPlayer().name
       }: ${this.getCurrentPlayer().getScore()}`
     );
+    this.showScoreboard();
     this.resetRound();
+
+    if (this.wordDisplay === this.secretWord) {
+      console.log(
+        `Parabéns, ${this.getCurrentPlayer().name}! Você acertou a palavra!`
+      );
+      this.getCurrentPlayer().incrementScore();
+      this.victories++;
+      this.showScoreboard();
+      this.resetRound();
+    } else if (this.wrongGuesses >= this.maxWrongGuesses) {
+      console.log(
+        `Você excedeu o número máximo de tentativas. A palavra era: ${this.secretWord}`
+      );
+      this.defeats++;
+      this.showScoreboard();
+      this.resetRound();
+    }
 
     if (this.players.every((player) => player.getScore() >= 3)) {
       console.log(
@@ -236,6 +256,12 @@ class GameController {
     }
 
     this.switchPlayer();
+  }
+
+  showScoreboard() {
+    console.log(
+      `Placar Atual: Vitórias - ${this.victories}, Derrotas - ${this.defeats}`
+    );
   }
 
   switchPlayer() {
@@ -263,13 +289,15 @@ class GameController {
       this.players.push(new Player(playerName));
     }
 
+    this.showScoreboard();
     while (true) {
       GameMenu.display();
       const choice = Match.getUserChoice();
 
       switch (choice) {
         case "1":
-          const guess = Match.getLetterGuess();
+          const guess = Match.getUserGuess();
+          console.clear();
           this.makeGuess(guess);
           break;
         case "2":
